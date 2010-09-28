@@ -1,0 +1,245 @@
+# Test file for the pKernel system
+# First the name:
+Happy Birthday
+# Then the key:
+6
+# Then the start tempo:
+30
+# Then the beat (in this case, quarter note)
+4
+# Then some harmonic information:
+harm
+1 0 I
+endharm
+
+# Then the threads themselves
+
+thread
+Harmony thread
+harm
+2 0 I .
+endharm
+harm
+4 0 I .
+endharm
+harm
+2 0 I .
+endharm
+harm
+4 0 I .
+endharm
+harm
+2 2 V . -
+endharm
+harm
+4 2 V . -
+endharm
+harm
+2 0 V . -
+endharm
+harm
+4 0 V . -
+endharm
+harm
+2 0 I .
+endharm
+harm
+4 0 I .
+endharm
+harm
+2 1 I .
+endharm
+harm
+4 1 I .
+endharm
+harm
+2 0 IV .
+endharm
+harm
+4 0 IV .
+endharm
+harm
+2 2 I .
+endharm
+harm
+4 0 V .
+endharm
+script play
+.start
+return
+importHarm 0 h0
+newFloat f2 2
+.loop
+getChordNotes h0 n0
+getDuration h0 f1
+getInversion h0 f3
+getNote n0 f3 n1
+setNoteDuration n1 f1
+setNoteOctave n1 f2
+outNote n1
+getNextHarm h0 h0
+bne loop
+jmp start
+endscript
+endthread
+thread
+Alto
+script play
+.start
+importHarm 0 h0
+newFloat f2 2.0
+.loop
+getChordNotes h0 n0
+getDuration h0 f1
+getInversion h0 f3
+inc f3
+getNote n0 f3 n1
+bne ok
+newFloat f3 0.0
+getNote n0 f3 n1
+.ok
+setNoteDuration n1 f1
+setNoteOctave n1 f2
+outNote n1
+getNextHarm h0 h0
+bne loop
+jmp start
+endscript
+endthread
+thread
+Arpeggiate
+script play
+# This should arpeggiate the chords a little
+.start
+	importHarm 0 h0
+	newFloat f254 0.0833333333333333333333333333
+	.loop
+		newFloat f2 2.0
+		getChordNotes h0 n0
+		getDuration h0 f1
+		getInversion h0 f3
+		newFloat f4 0.0
+		.nextnote
+			getNote n0 f3 n1
+			bne ok
+			newFloat f3 0.0
+			getNote n0 f3 n1
+			.ok
+			getNotePitchClass n1 f5
+			cmp f4 f5
+			blt ok2
+			inc f2
+			.ok2	
+			copyFloat f4 f5
+			setNoteDuration n1 f254
+			setNoteOctave n1 f2
+			outNoteKey n1
+			sub f1 f254
+			cmpDirect f1 0.0
+			beq next
+			inc f3
+		jmp nextnote
+		.next	
+		getNextHarm h0 h0
+	bne loop
+jmp start
+#-------------------------------------------
+endscript
+endthread
+thread
+The Tune
+note
+2 0 12
+note
+4 3 7
+note
+4 3 9
+note
+4 3 7
+note
+4 4 0
+note
+4 3 11
+note
+4 0 12
+note
+4 3 7
+note
+4 3 9
+note
+4 3 7
+note
+4 4 2
+note
+4 4 0
+note
+4 0 12
+note
+4 3 7
+note
+4 4 7
+note
+4 4 4
+note
+4 4 0
+note
+4 3 11
+note
+4 3 9
+note
+4 4 5
+note
+4 4 4
+note
+4 4 0
+note
+4 4 2
+script play
+.start
+importNote 3 n0
+.loop
+	getInput f7 f32
+	modDirect f7 2.0
+	cmpDirect f7 0.0
+	beq fancy
+	outNoteKey n0
+	getNextNote n0 n0
+	bne loop
+	jmp start
+	.fancy
+	getNoteDuration n0 f0
+	getNotePitchClass n0 f1
+	getNoteOctave n0 f2
+	getNoteOctave n0 f3
+	getNoteOctave n0 f4
+	divDirect f0 3
+	newNote n1
+	newNote n2
+	newNote n3
+	# setup first note
+	setNoteDuration n1 f0
+	setNotePitchClass n1 f1
+	dec f2
+	setNoteOctave n1 f2
+	# set up second note
+	setNoteDuration n2 f0
+	setNotePitchClass n2 f1
+	setNoteOctave n2 f3
+	transposeDirect n2 -1.0
+	# set up third note
+	setNoteDuration n3 f0
+	setNotePitchClass n3 f1
+	setNoteOctave n3 f4
+	outNoteKey n1
+	outNoteKey n2
+	outNoteKey n3
+	getNextNote n0 n0
+bne loop
+jmp start
+endscript
+endthread
+# Up to 16 threads are allowed
+active 0
+#active 1
+active 2
+active 3

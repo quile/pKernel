@@ -1,0 +1,4 @@
+#!/usr/bin/perl -i
+
+$e = <>;
+print ($e+1);

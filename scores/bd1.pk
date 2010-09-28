@@ -1,0 +1,214 @@
+# Test file for the pKernel system
+# First the name:
+Happy Birthday
+# Then the key:
+0
+# Then the start tempo:
+40
+# Then the beat (in this case, quarter note)
+4
+# Then some harmonic information:
+harm
+1 0 I
+endharm
+
+# Then the threads themselves
+
+thread
+Harmony thread
+harm
+2 0 I .
+endharm
+harm
+4 0 I .
+endharm
+harm
+2 0 I .
+endharm
+harm
+4 0 I .
+endharm
+harm
+2 2 V .
+endharm
+harm
+4 2 V .
+endharm
+harm
+2 0 V .
+endharm
+harm
+4 0 V .
+endharm
+harm
+2 0 I .
+endharm
+harm
+4 0 I .
+endharm
+harm
+2 1 I .
+endharm
+harm
+4 1 I .
+endharm
+harm
+2 0 IV .
+endharm
+harm
+4 0 IV .
+endharm
+harm
+2 2 I .
+endharm
+harm
+4 0 V .
+endharm
+script play
+.start
+return
+importHarm 0 h0
+newFloat f2 2
+newFloat f252 0.0
+newFloat f253 50.0
+.loop
+getChordNotes h0 n0
+getDuration h0 f1
+getInversion h0 f3
+getNote n0 f3 n1
+setNoteDuration n1 f1
+setNoteOctave n1 f2
+setNoteBaggage n1 f252 f253
+outNoteKey n1
+getNextHarm h0 h0
+bne loop
+jmp start
+endscript
+endthread
+thread
+Alto
+script play
+.start
+importHarm 0 h0
+newFloat f2 2.0
+.loop
+getChordNotes h0 n0
+getDuration h0 f1
+getInversion h0 f3
+inc f3
+getNote n0 f3 n1
+bne ok
+newFloat f3 0.0
+getNote n0 f3 n1
+.ok
+setNoteDuration n1 f1
+setNoteOctave n1 f2
+outNote n1
+getNextHarm h0 h0
+bne loop
+jmp start
+endscript
+endthread
+thread
+Arpeggiate
+script play
+# This should arpeggiate the chords a little
+.start
+	importHarm 0 h0
+	newFloat f254 0.125
+	newFloat f252 0.0
+	newFloat f253 60.0
+	.loop
+		newFloat f2 2.0
+		getChordNotes h0 n0
+		getDuration h0 f1
+		getInversion h0 f3
+		.nextnote
+			getNote n0 f3 n1
+			bne ok
+			newFloat f3 0.0
+			getNote n0 f3 n1
+			inc f2
+			.ok
+			setNoteDuration n1 f254
+			setNoteOctave n1 f2
+			setNoteBaggage n1 f252 f253
+			outNoteKey n1
+			sub f1 f254
+			cmpDirect f1 0.0
+			beq next
+			inc f3
+		jmp nextnote
+		.next	
+		getNextHarm h0 h0
+	bne loop
+jmp start
+#-------------------------------------------
+endscript
+endthread
+thread
+The Tune
+note
+2 0 12
+note
+4 3 7
+note
+4 3 9
+note
+4 3 7
+note
+4 4 0
+note
+4 3 11
+note
+4 0 12
+note
+4 3 7
+note
+4 3 9
+note
+4 3 7
+note
+4 4 2
+note
+4 4 0
+note
+4 0 12
+note
+4 3 7
+note
+4 4 7
+note
+4 4 4
+note
+4 4 0
+note
+4 3 11
+note
+4 3 9
+note
+4 4 5
+note
+4 4 4
+note
+4 4 0
+note
+4 4 2
+script play
+.start
+importNote 3 n0
+newFloat f252 0.0
+newFloat f253 65.0
+.loop
+setNoteBaggage n0 f252 f253
+outNote n0
+getNextNote n0 n0
+bne loop
+jmp start
+endscript
+endthread
+# Up to 16 threads are allowed
+active 0
+#active 1
+active 2
+active 3

@@ -1,0 +1,81 @@
+# Test file for the pKernel system
+# First the name:
+Test file
+# Then the key:
+0
+# Then the start tempo:
+120
+# Then the beat (in this case, quarter note)
+4
+# Then some harmonic information:
+harm
+1 0 I
+endharm
+harm
+1 2 IV
+endharm
+harm
+1 1 -II
+endharm
+harm
+1 0 V
+endharm
+
+# and then a scale or two
+
+scale
+0 2 4 5 7 9 11
+endscale
+
+scale
+0 2 3 5 7 9 11
+0 2 3 5 7 8 10
+endscale
+
+# Then the threads themselves
+thread
+Harmony thread
+harm
+1 0 I .
+endharm
+harm
+1 0 V .
+endharm
+endthread
+thread
+Basic thread
+note
+4 2 0
+note
+4 3 1
+note
+4 2 2
+note
+4 3 3
+note
+4 2 4
+note
+4 3 5
+script play
+return
+equb 0
+equb 12
+equf 1.0
+endscript
+endthread
+# Up to 16 threads are allowed
+thread
+Secondary thread
+note
+1 5 6
+endthread
+thread
+Tertiary thread
+note
+2 4 4
+note
+2 4 7
+endthread
+active 0
+active 1
+active 2

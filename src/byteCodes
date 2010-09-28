@@ -1,0 +1,257 @@
+00	break	1	-	-	-
+01	return	1	-	-	-
+02	random	10	f	f	fr
+03	reset	1	-	-	-
+04	getElapsedTime	2	fr	-	-
+05	setElapsedTime	2	fr	-	-
+06
+07
+08	addHarm	3	hr	hr	-
+09	addNote	3	nr	nr	-
+0a	
+0b
+0c
+0d
+0e
+0f
+10	insertHarm	3	hr	hr	-
+11	insertNote	3	nr	nr	-
+12	extractHarmList	4	hr	fr	hr
+13	extractNoteList	4	nr	fr	nr
+14	copyHarm	3	hr	hr	-
+15	nearestNote	4	nr	nr	nr
+16	nearestNoteUp	4	nr	nr	nr
+17	nearestNoteDown	4	nr	nr	nr
+18	deleteHarm	2	hr	-	-
+19	deleteNote	2	nr	-	-
+1a	stealHarm	10	f	f	hr
+1b	stealNote	10	f	f	nr
+1c	destroyHarm	2	hr	-	-
+1d	destroyNote	2	nr	-	-
+1e	equb	1	b	-	-
+1f	equf	4	f	-	-
+20	newHarm	2	hr	-	-
+21	newNote	2	nr	-	-
+22	newFloat	6	fr	f	-
+23	newScale	2	sr	-	-
+24	getHarmOffset	4	hr	fr	hr
+25	getNoteOffset	4	nr	fr	nr
+26	copyFloat	3	fr	fr	-
+27	copyNote	3	nr	nr	-
+28	setRoot	3	hr	fr	-
+29	setInversion	3	hr	fr	-
+2a	setOctave	3	hr	fr	-
+2b	setDuration	3	hr	fr	-
+2c	setScale	3	hr	sr	-
+2d	setSize	3	hr	fr	-
+2e	setAlteration	3	hr	fr	-
+2f	setChordTone	4	hr	fr	fr
+30	getRoot	3	hr	fr	-
+31	getInversion	3	hr	fr	-
+32	getOctave	3	hr	fr	-
+33	getDuration	3	hr	fr	-
+34	getScale	3	hr	sr	-
+35	getSize	3	hr	fr	-
+36	setAlteration	3	hr	fr	-
+37	getChordTone	4	hr	fr	fr
+38	setNotePitchClass	3	nr	fr	-
+39	setNoteOctave	3	nr	fr	-
+3a	setNoteDuration	3	nr	fr	-
+3b	setNoteDegree	3	nr	fr	-
+3c	setNoteAlteration	4	nr	fr	fr
+3d	setNoteBaggage	4	nr	fr	fr
+3e	transpose	3	nr	fr	-
+3f	transposeDirect	6	nr	f	-
+40	getNotePitchClass	3	nr	fr	-
+41	getNoteOctave	3	nr	fr	-
+42	getNoteDuration	3	nr	fr	-
+43	getNoteDegree	3	nr	fr	-
+44	getNoteAlteration	4	nr	fr	fr
+45	getNoteBaggage	4	nr	fr	fr
+46	setTotalBeats	2	fr	-	-
+47	getTotalBeats	2	fr	-	-
+48	getNextHarm	3	hr	hr	-
+49	getNextNote	3	nr	nr	-
+4a	importByte	5	fr	a	fr
+4b	importFloat	5	fr	a	fr
+4c	getCurrentScale	2	fr	-	-
+4d	setCurrentScale	2	fr	-	-
+4e	getTimeSlice	2	fr	-	-
+4f	setTimeSlice	2	fr	-	-
+50	getPrevHarm	3	hr	hr	-
+51	getPrevNote	3	nr	nr	-
+52
+53	mult	3	fr	fr	-
+54	multDirect	6	fr	f	-
+55	int	2	fr	-	-
+56	div	3	fr	fr	-
+57	divDirect	6	fr	f	-
+58	inc	2	fr	-	-
+59	dec	2	fr	-	-
+5a	add	3	fr	fr	-
+5b	addDirect	6	fr	f	-
+5c	sub	3	fr	fr	-
+5d	subDirect	6	fr	f	-
+5e	mod	3	fr	fr	-
+5f	modDirect	6	fr	f	-
+60	jmp	3	a	-	-
+61	jsr	3	a	-	-
+62	beq	3	a	-	-
+63	bne	3	a	-	-
+64	blt	3	a	-	-
+65	bgt	3	a	-	-
+66	ble	3	a	-	-
+67	bge	3	a	-	-
+68	cmpHarm	3	hr	hr	-
+69	cmpNote	3	nr	nr	-
+6a	cmpScale	3	sr	sr	-
+6b	cmp	3	fr	fr	-
+6c	cmpDirect	6	fr	f	-
+6d	getInput	3	fr	fr	-
+6e	setInput	3	fr	fr	-
+6f	setInputDirect	6	fr	f	-
+70	getHarm	4	hr	fr	hr
+71	getNote	4	nr	fr	nr
+72	degree	4	sr	fr	nr
+73	getNoteInChord	4	nr	fr	nr
+74	importHarm	6	f	hr	-
+75	importNote	6	f	nr	-
+76	getKey	2	fr	-	-
+77	setKey	2	fr	-	-
+78	outHarm	2	hr	-	-
+79	outNote	2	nr	-	-
+7a	replaceHarm	4	hr	hr	fr
+7b	replaceNote	4	nr	nr	fr
+7c	getChordNotes	3	hr	nr	-
+7d	outNoteKey	2	nr	-	-
+7e	activate	2	fr	-	-
+7f	deactivate	2	fr	-	-
+80	halt	1	-	-	-
+81	dumpFloats	1	-	-	-
+82	dumpHarm	1	hr	-	-
+83	dumpNote	1	nr	-	-
+84
+85
+86
+87
+88
+89
+8a
+8b
+8c
+8d
+8e
+8f
+90
+91
+92
+93
+94
+95
+96
+97
+98
+98
+99
+9a
+9b
+9c
+9d
+9e
+9f
+a0
+a1
+a2
+a3
+a4
+a5
+a6
+a7
+a8
+a9
+aa
+ab
+ac
+ad
+ae
+af
+b0
+b1
+b2
+b3
+b4
+b5
+b6
+b7
+b8
+b9
+ba
+bb
+bc
+bd
+be
+bf
+c0
+c1
+c2
+c3
+c4
+c5
+c6
+c7
+c8
+c9
+ca
+cb
+cc
+cd
+ce
+cf
+d0
+d1
+d2
+d3
+d4
+d5
+d6
+d7
+d8
+d9
+da
+db
+dc
+dd
+de
+df
+e0
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+e9
+ea
+eb
+ec
+ed
+ee
+ef
+f0
+f1
+f2
+f3
+f4
+f5
+f6
+f7
+f8
+f9
+fa
+fb
+fc
+fd
+fe
+ff

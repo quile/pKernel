@@ -1,0 +1,21 @@
+#!/usr/local/bin/perl
+#
+
+while (<>)
+{
+	@stuff = split (//, $_);	
+
+	for ($i=0; $i<@stuff; $i++)
+	{
+		$s = $stuff[$i];
+
+		if ($s =~ /[-+\.\t\n \d\w]/)
+		{
+			print $s;
+		}
+		else
+		{
+			$i++;
+		}	
+	}
+}

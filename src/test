@@ -1,0 +1,3 @@
+#!/bin/sh
+
+go twinkle.pk 4 | ../test.csnd/csound -g -odevaudio -Lstdin ../test.csnd/test.orc

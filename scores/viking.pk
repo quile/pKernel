@@ -1,0 +1,1041 @@
+# Test file for the pKernel system
+# First the name:
+Mike's Viking Theme
+# Then the key: 
+0-
+# Then the start tempo:
+120
+# Then the beat (in this case, quarter note)
+4
+# Then some harmonic information:
+harm
+1 0 I
+endharm
+# a scale
+# dorian
+scale
+0 2 3 5 7 9 10
+endscale
+# phrygian
+scale
+0 1 3 5 7 8 10
+endscale
+#wholetone
+scale
+0 2 4 6 8 10
+endscale
+#pentatonic
+scale
+0 2 5 7 9
+endscale
+# Then the threads themselves
+
+thread
+Harmony thread
+harm
+1 0 0 .
+endharm
+script play
+.start
+return
+endscript
+endthread
+thread
+Real Harmony thread
+harm
+virtual
+2 0 i .
+endharm
+harm
+virtual
+2 0 VII .
+endharm
+harm
+virtual
+2 0 III .
+endharm
+harm
+virtual
+2 0 IV .
+endharm
+harm
+2 0 i .
+endharm
+harm
+virtual
+2 0 VII .
+endharm
+harm
+virtual
+2. 0 IV .
+endharm
+harm
+4 0 v . 
+endharm
+script play
+.start
+	return
+	importHarm 1 h2
+	# set up a dummy note
+	newFloat f4 12
+	newNote n0
+	getTimeSlice f1
+	setNoteDuration n0 f1
+	setNotePitchClass n0 f4
+	# total offset
+	newFloat f0 0.0
+	newFloat f6 0.0
+.loop
+		# clear the harmony buffer
+		destroyHarm h1
+		#set the internal offset counter
+		copyFloat f2 f0
+		copyFloat f3 f1
+.innerloop
+		getHarmOffset h2 f2 h3
+		copyHarm h4 h3
+		cmpDirect f6 0.0
+		ble add
+		setDuration h4 f6
+		.add
+		addHarm h4 h1
+		getDuration h4 f5
+		add f2 f5
+		sub f3 f5
+		cmpDirect f3 0.0
+		bgt innerloop
+		add f0 f1
+		# output the dummy
+		outNoteKey n0
+		copyFloat f6 f3
+		multDirect f6 -1.0
+	jmp loop		
+destroyNote n0
+jmp start
+endscript
+endthread
+thread
+Alto
+script play
+.start
+return
+endscript
+endthread
+thread
+Arpeggiate
+script play
+# This provides accompaniment of a sort
+.start
+newFloat f249 3.0
+setCurrentScale f249
+# initialise stuff
+importHarm 1 h0
+newFloat f253 50.00
+newFloat f252 0.00
+newFloat f251 2.00
+newFloat f254 0.0833333333333333333333333333
+newFloat f250 0.0
+#------------------------------------
+# Clean up n5 for the helper thread
+#------------------------------------
+destroyNote n6
+destroyNote n5
+.loop
+	getInput f32 f32
+	cmpDirect f32 0.0
+	beq zero
+	cmpDirect f32 1.0
+	beq one
+	cmpDirect f32 2.0
+	beq two
+	cmpDirect f32 3.0
+	beq three
+		#-------------------------------------------
+		# 0: plain bassline
+		#-------------------------------------------
+.zero
+		getHarmOffset h0 f250 h2
+		getChordNotes h2 n0
+		getDuration h2 f1
+		add f250 f1
+		getInversion h2 f3
+		#set up note and helper, play it
+		getNoteInChord n0 f3 n1
+		setNoteDuration n1 f1
+		setNoteBaggage n1 f252 f253
+		setNoteOctave n1 f251
+		# this is for the first helper
+		nearestNoteUp n0 n1 n2
+		setNoteBaggage n2 f252 f253
+		addNote n2 n5
+		# this is for the second
+		nearestNoteUp n0 n2 n3
+		setNoteBaggage n3 f252 f253
+		addNote n3 n6
+		#dumpNote n5
+		# Now output the main note.
+		outNoteKey n1
+		jmp loop
+		#--------------------------------------------
+		# 1: quarter-note bass line
+		#--------------------------------------------
+.one	
+		newFloat f254 0.25
+		newFloat f2 1.0
+		getHarmOffset h0 f250 h2
+		getChordNotes h2 n0
+		getInversion h0 f3
+		getDuration h0 f1
+		add f250 f1
+		cmpDirect f1 0.25
+		ble normal
+.nextnote
+		getNote n0 f3 n1
+		bne ok11
+		newFloat f3 0.0
+		getNote n0 f3 n1
+.ok11
+		getNotePitchClass n1 f5
+		cmp f4 f5
+		blt ok12
+		inc f2
+.ok12
+		copyFloat f4 f5
+		setNoteOctave n1 f2
+		setNoteDuration n1 f254
+		setNoteBaggage n1 f252 f253
+		outNoteKey n1
+		sub f1 f254
+		cmpDirect f1 0.0
+		ble next
+		inc f3
+		jmp nextnote
+.next	
+	jmp loop
+.normal
+		getNote n0 f3 n1
+		setNoteOctave n1 f2
+		setNoteDuration n1 f254
+		setNoteBaggage n1 f252 f253
+		outNoteKey n1
+	jmp loop		
+.two
+		#---------------------------------------------
+		# 2: eight note arpeggio accompaniment
+		#---------------------------------------------
+		newFloat f254 0.0625
+		newFloat f2 1.0
+		getHarmOffset h0 f250 h2
+		getChordNotes h2 n0
+		getDuration h0 f1
+		getInversion h0 f3
+		add f250 f1
+		newFloat f4 0.0
+.nextnote2
+		getNote n0 f3 n1
+		bne ok21
+		newFloat f3 0.0
+		getNote n0 f3 n1
+.ok21
+		getNotePitchClass n1 f5
+		cmp f4 f5
+		blt ok22
+		inc f2
+.ok22
+		copyFloat f4 f5
+		setNoteDuration n1 f254
+		setNoteOctave n1 f2
+		setNoteBaggage n1 f252 f253
+		outNoteKey n1
+		sub f1 f254
+		cmpDirect f1 0.0
+		ble next2
+		inc f3
+		jmp nextnote2
+.next2
+	jmp loop
+.three
+		#--------------------------------------
+		# Eighth note ragtime bassline
+		#--------------------------------------
+		newFloat f254 0.125
+		newFloat f12 12.00
+		getHarmOffset h0 f250 h2
+		getChordNotes h2 n0
+		getInversion h0 f3
+		getDuration h0 f1
+		add f250 f1
+		cmpDirect f1 0.25
+		ble normal3
+		newFloat f13 0.0
+		newFloat f2 0.0
+.nextnote3
+		copyFloat f15 f13
+		modDIrect f15 2.0
+		cmpDirect f15 0.0
+		bne second3
+		newFloat f2 0.0
+		getNote n0 f3 n1
+.cont3
+		bne ok31
+		newFloat f3 0.0
+		getNote n0 f3 n1
+.ok31
+		# if it's the second bass hit, play the fifth instead
+		copyFloat f15 f13
+		modDirect f15 4.0
+		cmpDirect f15 2.0
+		bne ok33
+		nearestNoteUp n0 n1 n2
+		nearestNoteUp n0 n2 n3
+		copyNote n1 n3
+.ok33
+		setNoteOctave n1 f2
+		setNoteDuration n1 f254
+		setNoteBaggage n1 f252 f253
+		# this is for the first helper
+		copyNote n2 n1
+		copyFloat f7 f2
+		inc f7
+		setNoteOctave n2 f7
+		addNote n2 n5
+		# the second helper is silent here
+		copyNote n3 n1
+		setNotePitchClass n3 f12	
+		addNote n3 n6
+		# and output the note
+		copyNote n8 n1
+		outNoteKey n1
+		jmp cleanup3
+.second3
+		# This is the second note, usually
+		# just a three note chord but
+		# if the bassnote is 2 semitones away,
+		# walk to it instead
+		jmp threenotec
+		copyNote n4 n1
+		getDuration h2 f30
+		copyFloat f249 f250
+		add f249 f30
+		getHarmOffset h0 f249 h3
+		getInversion h3 f31
+		getChordNotes h3 n8
+		getNoteInChord n8 f31 n9
+		# get the info we need
+		getNotePitchClass n4 f40
+		getNoteOctave n4 f41
+		getNotePitchClass n9 f42
+		getNoteOctave n9 f43
+		mult f40 f41
+		mult f42 f43
+		sub f42
+		cmpDirect f42 -2.0
+		bne checkforup
+		transposeDirect n4 -1.0
+		# this is for the first helper
+		copyNote n2 n4
+		copyFloat f7 f2
+		inc f7
+		setNoteOctave n2 f7
+		addNote n2 n5
+		# the second helper is silent here
+		copyNote n3 n4
+		setNotePitchClass n3 f12	
+		addNote n3 n6
+		outNoteKey n4
+		jmp cleanup3
+.checkforup
+		cmpDirect f42 2.0
+		bne threenotec
+		transposeDirect n4 1.0
+		# this is for the first helper
+		copyNote n2 n4
+		copyFloat f7 f2
+		inc f7
+		setNoteOctave n2 f7
+		addNote n2 n5
+		# the second helper is silent here
+		copyNote n3 n4
+		setNotePitchClass n3 f12	
+		addNote n3 n6
+		outNoteKey n4
+		jmp cleanup3
+.threenotec
+		nearestNoteUp n0 n1 n2
+		copyNote n7 n2
+		getNoteOctave n1 f7
+		addDirect f7 2.0
+		setNoteOctave n7 f7
+		setNoteDuration n7 f254
+		setNoteBaggage n7 f252 f253
+		# this is for the first helper
+		nearestNoteUp n0 n7 n3
+		copyNote n8 n3
+		setNoteBaggage n8 f252 f253
+		setNoteDuration n8 f254
+		setNoteOctave n8 f7
+		addNote n8 n5
+		# the second helper the next note up
+		nearestNoteUp n0 n8 n9
+		#setNoteOctave n8 f7
+		setNoteBaggage n8 f252 f253
+		setNoteDuration n8 f254
+		addNote n8 n6
+		# output the note
+		outNoteKey n7
+.cleanup3
+		inc f13
+		sub f1 f254
+		cmpDirect f1 0.0
+		ble loop
+		jmp nextnote3
+.normal3
+		getNote n0 f3 n1
+		setNoteOctave n1 f2
+		setNoteDuration n1 f254
+		setNoteBaggage n1 f252 f253
+		outNoteKey n1
+	jmp loop		
+	return
+jmp start
+#-------------------------------------------
+endscript
+endthread
+thread
+The Tune
+note
+8 4 12
+note
+16 4 d1
+note
+16 4 d2
+note
+8 4 d3
+note
+8 4 d1
+note
+16 4 d2
+note
+16 4 d3
+note
+4 4 d4
+note
+16 4 d3
+note
+16 4 d4
+note
+4. 4 d5
+note
+16 4 d4
+note
+16 4 d5
+note
+4 4 d6
+note
+4 4 d4
+note
+8 4 12
+note
+16 4 d1
+note
+16 4 d2
+note
+8 4 d3
+note
+8 4 d1
+note
+16 4 d2
+note
+16 4 d3
+note
+4 4 d4
+note
+16 4 d3
+note
+16 4 d2
+note
+2 4 d1
+note
+8 4 12
+note
+16 4 d2
+note
+16 4 d1
+note
+4 3 d7
+script play
+.start
+importNote 4 n0
+importHarm 1 h0
+newFloat f252 0.00
+newFloat f253 65.00
+newFloat f251 1.00
+# absolute offset from start
+.loop
+	getInput f70 f32
+	cmpDirect f70 0.0
+	beq zero
+	cmpDirect f70 1.0
+	beq one
+	cmpDirect f70 2.0
+	beq two
+	cmpDirect f70 3.0
+	beq three
+	#---------------------------------
+	# 0. Basic melody
+	#---------------------------------
+.zero
+	setNoteBaggage n0 f252 f253
+	outNoteKey n0
+	getNextNote n0 n0
+	bne loop
+	jmp start
+	#---------------------------------
+	# 1. Triplets
+	# - Follows simple triplet rules
+	#   by checking successive melodic
+	#   notes and adapting accordingly
+	#---------------------------------
+.one
+	# This has to be LARGER than 1/12 or the
+	# floating point error will creep in and screw things up
+	newFloat f10 0.083334
+	newFloat f19 0.0
+	getNoteDuration n0 f11
+	getNotePitchClass n0 f12
+	getNoteOctave n0 f13
+	getNoteDegree n0 f15
+	# check next melodic note... if it's a rest or if we're at the
+	# beginning, just bugger off and play a normal note
+	getNextNote n0 n1
+	beq plainNote
+	getNotePitchClass n1 f14
+	cmpDirect f14 12.0
+	beq plainNote
+	# check if the current note's duration is long enough
+	cmpDirect f11 0.25
+	blt plainNote
+	# next note is not a rest
+	# so get the degree and figure out where we're going
+	getNoteDegree n1 f16
+	getNoteOctave n1 f17
+	cmp f13 f17
+	# if the octave is different then we need to figure out where
+	beq getdegdiff
+	bgt octaveGoDown
+	# octave goes up
+	sub f17 f13
+	multDirect f17 7.0
+	add f16 f17	
+	jmp getdegdiff
+.octaveGoDown
+	# octave goes down
+	sub f17 f13
+	multDirect f17 -7.0
+	add f15 f17
+.getdegdiff	
+	sub f16 f15
+	#dumpFloats
+	cmpDirect f16 0.0
+	beq unison
+	bgt diffok
+	copyFloat f20 f16
+	multDirect f16 -1.0
+	.diffok
+	# check for leaps
+	cmpDirect f16 1.0
+	beq second
+	cmpDirect f16 2.0
+	beq third
+	cmpDirect f16 3.0
+	beq fourth
+	cmpDirect f16 4.0
+	beq fifth
+	cmpDirect f16 5.0
+	beq sixth
+	cmpDirect f16 6.0
+	beq seventh
+	# otherwise it's something weird so just play
+	# the note
+.plainNote
+	setNoteBaggage n0 f252 f253
+	outNoteKey n0
+	getNextNote n0 n0
+	bne loop
+	jmp start
+.unison
+		newNote n2
+		newNote n3
+		newNote n4
+		# set up first note
+		copyNote n2 n0
+		setNoteDuration n2 f10
+		setNoteBaggage n2 f252 f253
+		outNoteKey n2
+		# set up second note
+		copyNote n3 n0
+		setNoteDuration n3 f10
+		setNoteBaggage n3 f252 f253
+		getNoteDegree n3 f17
+		inc f17
+		modDirect f17 8.0
+		cmpDirect f17 0.0
+		bne out2
+		inc f17
+		getNoteOctave n3 f18
+		inc f18
+		setNoteOctave n3 f18
+		.out2
+		setNoteDegree n3 f17
+		outNoteKey n3
+		#	set up third note
+		copyNote n4 n0
+		transposeDirect n4 -1.0
+		setNoteDuration n4 f10
+		setNoteBaggage n4 f252 f253
+		outNoteKey n4
+		destroyNote n2
+		destroyNote n3
+		destroyNote n4
+		subDirect f11 0.25
+		cmpDirect f11 0.0
+		beq done
+		cmpDirect f11 0.25
+		blt remainder
+		jmp unison
+.second
+		newNote n2
+		newNote n3
+		# set up first note
+		copyNote n2 n0
+		setNoteDuration n2 f10
+		#dumpFloats
+		setNoteBaggage n2 f252 f253
+		outNoteKey n2
+		# set up second note
+		copyNote n3 n0
+		setNoteDuration n3 f10
+		transposeDirect n3 -1.0
+		setNoteBaggage n3 f252 f253
+		outNoteKey n3
+		# third note is the same as the first
+		copyNote n2 n0
+		setNoteDuration n2 f10
+		setNoteBaggage n2 f252 f253
+		outNoteKey n2	
+		destroyNote n2
+		destroyNote n3
+		subDirect f11 0.25
+		cmpDirect f11 0.0
+		beq done
+		cmpDirect f11 0.25
+		blt remainder
+		jmp second
+		#-----------------------------------------
+		# interval of a third
+		#-----------------------------------------
+.third
+		newNote n2
+		newNote n3
+		newNote n4
+		# set up first note
+		copyNote n2 n0
+		setNoteDuration n2 f10
+		setNoteBaggage n2 f252 f253
+		outNoteKey n2
+		# set up second note
+		getElapsedTime f18	
+		getHarmOffset h0 f18 h4
+		getChordNotes h4 n5
+		nearestNoteDown n5 n0 n3
+		setNoteDuration n3 f10
+		setNoteBaggage n3 f252 f253
+		outNoteKey n3
+		# set up third note
+		copyFloat f18 f19
+		copyNote n4 n0
+		.uploop3
+		copyNote n6 n4
+		nearestNoteUp n5 n6 n4
+		dec f18
+		cmpDirect f18 0.0
+		bgt uploop3
+		setNoteDuration n4 f10
+		setNoteBaggage n4 f252 f253
+		outNoteKey n4
+		# done so recycle
+		destroyNote n2
+		destroyNote n3
+		destroyNote n4
+		destroyNote n5
+		subDirect f11 0.25
+		cmpDirect f11 0.0
+		beq done
+		cmpDirect f11 0.25
+		blt remainder
+		inc f19
+		jmp third
+		#-----------------------------------------------
+		# fourth up and down
+		#-----------------------------------------------
+.fourth
+		newNote n2
+		newNote n3
+		newNote n4
+		cmpDirect f11 0.25
+		beq fourthdirect
+		# while away the time
+		.fourthdirect
+		# set up first note
+		copyNote n2 n0
+		setNoteDuration n2 f10
+		setNoteBaggage n2 f252 f253
+		outNoteKey n2
+		# figure if we're going up or down
+		cmpDirect f20 0.0
+		blt neg4
+		# interval is a fourth UP
+		copyNote n3 n0
+		setNoteDuration n3 f10
+		setNoteBaggage n3 f252 f253
+		getNoteDegree n3 f16
+		inc f16
+		modDirect f16 8.0
+		cmpDirect f16 0.0
+		bne octup4
+		getNoteOctave n3 f17
+		inc f17
+		setNoteOctave n3 f17
+.octup4
+		setNoteDegree n3 f16
+		outNoteKey n3
+		# setup third note
+		copyNote n4 n3
+		setNoteDuration n4 f10
+		setNoteBaggage n4 f252 f253
+		getNoteDegree n4 f16
+		inc f16
+		modDirect f16 8.0
+		cmpDirect f16 0.0
+		bne octup42
+		getNoteOctave n4 f17
+		inc f17
+		setNoteOctave n4 f17
+.octup42
+		setNoteDegree n4 f16
+		outNoteKey n4
+		jmp destroy4
+.neg4
+		# interval is a fourth DOWN
+		copyNote n3 n0
+		setNoteDuration n3 f10
+		setNoteBaggage n3 f252 f253
+		getNoteDegree n3 f16
+		dec f16
+		modDirect f16 8.0
+		cmpDirect f16 7.0
+		bne octdown4
+		getNoteOctave n3 f17
+		dec f17
+		setNoteOctave n3 f17
+.octdown4
+		setNoteDegree n3 f16
+		outNoteKey n3
+		# setup third note
+		copyNote n4 n3
+		setNoteDuration n4 f10
+		setNoteBaggage n4 f252 f253
+		getNoteDegree n4 f16
+		dec f16
+		modDirect f16 8.0
+		cmpDirect f16 7.0
+		bne octdown42
+		getNoteOctave n4 f17
+		dec f17
+		setNoteOctave n4 f17
+.octdown42
+		setNoteDegree n4 f16
+		outNoteKey n4
+		# done so recycle
+.destroy4
+		destroyNote n2
+		destroyNote n3
+		destroyNote n4
+		destroyNote n5
+		subDirect f11 0.25
+		cmpDirect f11 0.0
+		beq done
+		cmpDirect f11 0.25
+		blt remainder
+		inc f19
+		jmp fourth
+		#-------------------------------------
+		# fifth, sixth and seventh stay the
+		# same
+		#-------------------------------------
+.fifth
+.sixth
+.seventh
+		setNoteBaggage n0 f252 f253
+		outNoteKey n0
+		getNextNote n0 n0
+		bne loop
+		jmp start
+		# make a note out of what's left and then loop
+.remainder
+		copyNote n2 n0
+		setNoteDuration n2 f11
+		setNoteBaggage n2 f252 f253
+		outNoteKey n2
+.done
+		getNextNote n0 n0
+		bne loop
+		jmp start	
+	#---------------------------------
+	# 2. 
+	#---------------------------------
+.two
+	jmp zero	
+	#---------------------------------
+	# 3. Ragtime syncopations
+	#---------------------------------
+.three
+	newFloat f19 0.0
+	# get the current harmony
+	getElapsedTime f18
+	getHarmOffset h0 f18 h4
+	getChordNotes h4 n4
+	getNoteDuration n0 f11
+	getNotePitchClass n0 f12
+	getNoteOctave n0 f13
+	getNoteDegree n0 f15
+	# check next melodic note... if it's a rest or if we're at the
+	# beginning, just bugger off and play a normal note
+	getNextNote n0 n1
+	beq plainNote
+	getNotePitchClass n1 f14
+	cmpDirect f14 12.0
+	beq plainNote
+	# check if current harmony is a rest, if so, play
+	# normal note
+	getNotePitchClass n4 f14
+	cmpDirect f14 12.0
+	beq plainNote
+	# check if the current note's duration is long enough
+	cmpDirect f11 0.25
+	blt plainNote
+	# next note is not a rest
+	# and the duration is long enough so we
+	# need to choose what to do
+	# note is longer than a quarter note
+	beq quarterNote
+.longnote
+	newFloat f30 0.0
+	newFloat f10 0.0625
+	copyNote n3 n0
+	copyNote n6 n0
+.longloop
+	#setup next note
+	copyFloat f31 f30
+	modDirect f30 3.0
+	cmpDirect f30 1.0
+	bne newNoteDown
+	nearestNoteUp n4 n3 n5
+	copyNote n3 n5
+	copyNote n6 n3
+	jmp outThisNote
+.newNoteDown		
+	nearestNoteDown n4 n6 n7
+	copyNote n6 n7	
+.outThisNote
+	setNoteDuration n6 f10
+	setNoteBaggage n6 f252 f253
+	outNoteKey n6
+	inc f30
+	sub f11 f10
+	cmpDirect f11 0.0
+	bgt longloop
+	getNextNote n0 n0
+	bne loop
+	jmp start
+.quarterNote		
+	#---------------------------------------
+	# For each alternate qnote, do either
+	# the regular syncopation or the
+	# arpeggiated one
+	#---------------------------------------
+	copyFloat f34 f33
+	modDirect f34 2.0
+	cmpDirect f34 0.0
+	bne qcontinue
+	inc f33
+	jmp longnote
+.qcontinue
+	newFloat f36 0.0625
+	newFloat f37 0.125
+	inc f33
+	copyNote n2 n0
+	setNoteDuration n2 f36
+	setNoteBaggage n2 f252 f253
+	outNoteKey n2
+	# Now set up second note
+	nearestNoteUp n4 n2 n3
+	nearestNoteUp n4 n3 n5
+	setNoteDuration n5 f37
+	setNoteBaggage n5 f252 f253
+	outNoteKey n5
+	# Now play the last note
+	copyNote n6 n2
+	outNoteKey n6
+	getNextNote n0 n0
+	bne loop
+jmp start
+getCurrentScale f12
+cmpDirect f12 0.0
+bne major
+.minor
+setCurrentScale f11
+jmp start
+.major
+setCurrentScale f10
+jmp start
+endscript
+endthread
+thread
+This is a helper thread for thread 2
+script play
+#------------------------------------
+# This is called a "helper" thread
+# in that it does nothing on its
+# own: it just borrows notes from
+# another thread that is generating
+# them.  It must come AFTER that
+# thread in the list, of course.
+#------------------------------------
+.start
+	#---------------------------------
+	# Create a dummy note that's a
+	# rest
+	#---------------------------------
+	newNote n0
+	newFloat f2 12.0
+	newFloat f252 0.0
+	newFloat f253 60.0
+	getTimeSlice f0
+	getTotalBeats f1
+	sub f0 f1
+	setNoteDuration n0 f0
+	setNotePitchClass n0 f2
+	copyFloat f3 f0
+	stealNote 3 5 n6
+	newFloat f6 0.0
+.loop
+	getNote n6 f6 n7
+	beq finished
+	setNoteBaggage n7 f252 f253
+	outNoteKey n7
+	getNoteDuration n7 f4
+	sub f3 f4
+	cmpDirect f3 0.0
+	ble finished
+	inc f6
+	jmp loop
+.finished
+	destroyNote n6
+	cmpDirect f3 0.0
+	ble start
+	setNoteDuration n0 f3
+	outNoteKey n0
+	jmp start
+endscript
+endthread
+thread
+Second helper of thread 3
+script play
+#------------------------------------
+# This is called a "helper" thread
+# in that it does nothing on its
+# own: it just borrows notes from
+# another thread that is generating
+# them.  It must come AFTER that
+# thread in the list, of course.
+#------------------------------------
+.start
+	#---------------------------------
+	# Create a dummy note that's a
+	# rest
+	#---------------------------------
+	newNote n0
+	newFloat f2 12.0
+	newFloat f252 0.0
+	newFloat f253 60.0
+	getTimeSlice f0
+	getTotalBeats f1
+	sub f0 f1
+	setNoteDuration n0 f0
+	setNotePitchClass n0 f2
+	copyFloat f3 f0
+	stealNote 3 6 n6
+	newFloat f6 0.0
+.loop
+	getNote n6 f6 n7
+	beq finished
+	setNoteBaggage n7 f252 f253
+	outNoteKey n7
+	getNoteDuration n7 f4
+	sub f3 f4
+	cmpDirect f3 0.0
+	ble finished
+	inc f6
+	jmp loop
+.finished
+	destroyNote n6
+	cmpDirect f3 0.0
+	ble start
+	setNoteDuration n0 f3
+	outNoteKey n0
+	jmp start
+endscript
+endthread
+thread
+Timer thread
+harm
+1 0 0 .
+endharm
+script play
+.start
+	importNote 4 n0
+	newFloat f12 12.0
+	destroyNote n1
+	newNote n1
+.loop
+	copyNote n1 n0
+	setNotePitchClass n1 f12
+	getNextNote n0 n2
+	beq done
+	outNote n1
+	getNextNote n0 n0
+	jmp loop
+.done
+	getInput f32 f32
+	inc f32
+	setInput f32 f32
+	outNote n1
+	jmp start
+return
+endscript
+endthread
+# Up to 16 threads are allowed
+# This is a dummy thread
+active 0
+# This is the harmony content
+#active 1
+#active 2
+# This generates the bassline and chords
+active 3
+# This is the tune
+active 4
+# These are helpers for thread 3
+active 5
+active 6
+active 7
