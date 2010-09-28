@@ -19,7 +19,7 @@ in almost a decade.
 
 I'm also interested in connecting it with the
 
-[Humdrum Toolkit]:"http://www.musiccog.ohio-state.edu/Humdrum/"
+[Humdrum Toolkit](http://www.musiccog.ohio-state.edu/Humdrum/)
 
 which is a project that I was heavily involved in during its development
 in the mid 90s.
