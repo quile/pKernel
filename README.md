@@ -9,7 +9,10 @@ low-level -- in fact it's a musical version of 6502 assembler.  The reason
 for this is so that higher-level tools can be written to "compile" down
 to this assembly language.  A full description of the assembler opcodes
 can be found in the *byteCodes* file, and there are numerous examples
-in the 'scores' directory.
+in the 'scores' directory.  It can be used in threaded and non-threaded
+systems; the design is co-operative insofar as each successive
+call tells the consumer when the next call should occur in order to
+continue generating music in real-time.
 
 I have been resurrecting this code recently, and I'll be freshening it
 up over the next short while.  There is also some disused windows code that
